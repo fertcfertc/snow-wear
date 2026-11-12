@@ -1,0 +1,40 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/fertcfertc/snow-wear/issues"
+
+[[mods]]
+modId = "snowwear"
+version = "${version}"
+displayName = "Snow Wear"
+authors = "fertc"
+description = "Snow settles on player clothing during snowfall and melts under cover."
+iconFile = "assets/snowwear/icon.png"
+displayURL = "https://github.com/fertcfertc/snow-wear"
+
+[[dependencies.snowwear]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.3.0.102,26.4)"
+side = "CLIENT"
+
+[[dependencies.snowwear]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.3,26.4)"
+side = "CLIENT"
+
+[[dependencies.snowwear]]
+modId = "architectury"
+type = "required"
+versionRange = "[22.0.5,23)"
+side = "CLIENT"
+
+[[dependencies.snowwear]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[26.3.159,26.4)"
+side = "CLIENT"
+
+[[mixins]]
+config = "snowwear.mixins.json"

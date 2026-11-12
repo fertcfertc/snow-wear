@@ -1,0 +1,10 @@
+architectury {
+    injectInjectables = false
+    common('fabric', 'neoforge')
+}
+
+dependencies {
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation "dev.architectury:architectury:${rootProject.architectury_api_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
+}

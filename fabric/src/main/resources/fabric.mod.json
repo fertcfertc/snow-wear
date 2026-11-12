@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "snowwear",
+  "version": "${version}",
+  "name": "Snow Wear",
+  "description": "Snow settles on player clothing during snowfall and melts under cover.",
+  "authors": ["fertc"],
+  "contact": {
+    "homepage": "https://github.com/fertcfertc/snow-wear",
+    "sources": "https://github.com/fertcfertc/snow-wear",
+    "issues": "https://github.com/fertcfertc/snow-wear/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/snowwear/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.fertcfertc.snowwear.fabric.SnowWearFabric"],
+    "modmenu": ["com.fertcfertc.snowwear.fabric.ModMenuIntegration"]
+  },
+  "mixins": ["snowwear.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": ">=0.160.5",
+    "architectury": ">=22.0.5",
+    "cloth-config": ">=26.3.159"
+  },
+  "suggests": { "modmenu": ">=21.0.0" }
+}

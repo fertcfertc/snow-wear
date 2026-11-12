@@ -1,0 +1,94 @@
+plugins {
+    id 'dev.architectury.loom-no-remap' version '1.17.493' apply false
+    id 'architectury-plugin' version '3.5.170'
+    id 'com.gradleup.shadow' version '9.4.3' apply false
+}
+
+architectury {
+    minecraft = minecraft_version
+}
+
+allprojects {
+    group = rootProject.maven_group
+    version = rootProject.mod_version
+}
+
+subprojects {
+    apply plugin: 'dev.architectury.loom-no-remap'
+    apply plugin: 'architectury-plugin'
+
+    base.archivesName = "${rootProject.archives_name}-${project.name}"
+
+    repositories {
+        maven { url = 'https://maven.neoforged.net/releases/' }
+        maven { url = 'https://maven.architectury.dev/' }
+        maven { url = 'https://maven.shedaniel.me/' }
+        maven { url = 'https://maven.terraformersmc.com/releases/' }
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:${rootProject.minecraft_version}"
+    }
+
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(25)
+        withSourcesJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.release = 25
+        options.encoding = 'UTF-8'
+        options.compilerArgs.add('-Xlint:deprecation')
+    }
+
+    // The common module uses Architectury API directly and needs no runtime bytecode transforms.
+    tasks.withType(JavaExec).matching { it.name in ['runClient'] }.configureEach {
+        doFirst {
+            mainClass.set('net.fabricmc.devlaunchinjector.Main')
+        }
+    }
+
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file('LICENSE'))
+        preserveFileTimestamps = false
+        reproducibleFileOrder = true
+    }
+
+    if (project.name != 'common') {
+        tasks.named('sourcesJar', Jar) {
+            from project(':common').sourceSets.main.allSource
+        }
+    }
+
+    plugins.withId('com.gradleup.shadow') {
+        def distribution = tasks.named('shadowJar')
+        def verifyModJar = tasks.register('verifyModJar') {
+            group = 'verification'
+            description = 'Checks runtime archive contents and icon dimensions.'
+            dependsOn distribution
+            inputs.file(distribution.flatMap { it.archiveFile })
+            doLast {
+                new java.util.zip.ZipFile(distribution.get().archiveFile.get().asFile).withCloseable { zip ->
+                    def forbidden = Collections.list(zip.entries()).findAll { entry ->
+                        if (entry.directory) return false
+                        def name = entry.name.toLowerCase(Locale.ROOT)
+                        name ==~ /.*\.(md|mdx|markdown|log|java|gradle|kts|bundle|bak|ps1|psm1|cjs|mjs|js|py|bat|cmd|sh)$/ ||
+                                name.startsWith('docs/') || name.startsWith('.github/') ||
+                                name.startsWith('.git/') || name.startsWith('logs/') ||
+                                name.contains('/test/') || name.contains('/gametest/')
+                    }
+                    if (forbidden) {
+                        throw new GradleException("Development files in mod JAR: ${forbidden*.name.join(', ')}")
+                    }
+                    def icon = zip.getEntry('assets/snowwear/icon.png')
+                    if (!icon) throw new GradleException('Mod icon is missing')
+                    def image = zip.getInputStream(icon).withCloseable { javax.imageio.ImageIO.read(it) }
+                    if (image == null || image.width != 64 || image.height != 64) {
+                        throw new GradleException('Mod icon must be a 64x64 PNG')
+                    }
+                }
+            }
+        }
+        tasks.named('check') { dependsOn verifyModJar }
+    }
+}

@@ -1,0 +1,7 @@
+{
+  "required": true,
+  "package": "com.fertcfertc.snowwear.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": ["AvatarStateMixin", "LayerAccessor", "AvatarRendererMixin"],
+  "injectors": { "defaultRequire": 1 }
+}

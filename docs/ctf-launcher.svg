@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="388" height="36" role="img" aria-label="Sponsored by CTF Launcher — try it out">
+  <title>Sponsored by CTF Launcher — try it out</title>
+  <rect width="388" height="36" rx="6" fill="#202124"/>
+  <path d="M270 0h112a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6H270Z" fill="#e4e3df"/>
+  <g font-family="Verdana,DejaVu Sans,sans-serif" font-size="12" text-anchor="middle">
+    <text x="135" y="23" fill="#f5f5f5">Sponsored by CTF Launcher</text>
+    <text x="329" y="23" fill="#202124">try it out ↗</text>
+  </g>
+</svg>
